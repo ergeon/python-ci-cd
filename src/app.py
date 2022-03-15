@@ -8,4 +8,4 @@ def echo(value):
 
 
 def do_fireworks():
-    return 'tada!'
+    return 'tada!!!'
