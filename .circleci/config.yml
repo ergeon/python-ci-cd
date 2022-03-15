@@ -10,14 +10,12 @@ jobs:
       - run:
           name: Install Dependencies
           command: |
-            cd test-coverage-python
             python3 -m venv venv
             venv/bin/pip install --upgrade pip setuptools wheel
             PIP=venv/bin/pip make install
       - run:
           name: Test
           command: |
-            cd test-coverage-python
             source venv/bin/activate
             make coverage
 
