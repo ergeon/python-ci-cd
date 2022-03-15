@@ -5,3 +5,7 @@ def main():
 
 def echo(value):
     return value
+
+
+def do_fireworks():
+    return 'tada!'
