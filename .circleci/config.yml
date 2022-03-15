@@ -18,6 +18,7 @@ jobs:
           command: |
             source venv/bin/activate
             make coverage
+            coveralls
 
 workflows:
   deploy_and_notify:
