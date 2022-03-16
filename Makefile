@@ -7,7 +7,7 @@ test:
 	PYTHONPATH=. pytest
 
 coverage-test:
-	PYTHONPATH=. coverage run -m pytest
+	PYTHONPATH=. coverage run --source=src/* -m pytest
 
 coverage-report:
 	coverage report
