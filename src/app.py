@@ -1,3 +1,5 @@
+from inline.utils import inline
+
 
 def main():
     return 0
@@ -5,3 +7,7 @@ def main():
 
 def echo(value):
     return value
+
+
+def something():
+    print("Else")
