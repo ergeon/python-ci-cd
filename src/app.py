@@ -5,3 +5,7 @@ def main():
 
 def echo(value):
     return value
+
+
+def zoom(ratio):
+    print(f'Zooming at {ratio}')
