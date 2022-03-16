@@ -1,0 +1,3 @@
+
+def inline():
+    return 'Inline!'
