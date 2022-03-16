@@ -2,3 +2,5 @@
 
 Python Project with CI/CD setup
 ===============================
+
+Contains coverage example
