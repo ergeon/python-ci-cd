@@ -11,3 +11,7 @@ def echo(value):
 
 def something():
     print("Else")
+
+
+def say_hello():
+    return "hello"
