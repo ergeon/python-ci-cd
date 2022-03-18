@@ -19,7 +19,3 @@ def say_hello():
 
 def new_1():
     return "1"
-
-
-def new_2():
-    return "2"
