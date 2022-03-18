@@ -22,8 +22,8 @@ jobs:
           name: Push Coverage
           command: |
             source venv/bin/activate
-            if [ -n "$CIRCLE_PULL_REQUEST" ];
-              PULL_REQUEST_NUMBER=$(curl -sb -H "Accept: application/json" "https://api.github.com/repos/ergeon/$CIRCLE_PROJECT_REPONAME/commits/$CIRCLE_SHA1/pulls" | python -c 'import json,sys;print(json.load(sys.stdin)[0]["number"])');
+            if [ -n "$CIRCLE_PULL_REQUEST" ]; then
+              PULL_REQUEST_NUMBER=$(curl -sb -H "Accept: application/json" "https://api.github.com/repos/ergeon/$CIRCLE_PROJECT_REPONAME/commits/$CIRCLE_SHA1/pulls" | python -c 'import json,sys;print(json.load(sys.stdin)[0]["number"])')
               CI_PULL_REQUEST=$PULL_REQUEST_NUMBER coveralls debug
               CI_PULL_REQUEST=$PULL_REQUEST_NUMBER coveralls
             else
