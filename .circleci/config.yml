@@ -18,7 +18,18 @@ jobs:
           command: |
             source venv/bin/activate
             make coverage
-            coveralls
+      - run:
+          name: Push Coverage
+          command: |
+            source venv/bin/activate
+            if [ -n "$CIRCLE_PULL_REQUEST" ]; then
+              PULL_REQUEST_NUMBER=$(curl -sb -H "Accept: application/json" "https://api.github.com/repos/ergeon/$CIRCLE_PROJECT_REPONAME/commits/$CIRCLE_SHA1/pulls" | python -c 'import json,sys;print(json.load(sys.stdin)[0]["number"])')
+              CI_PULL_REQUEST=$PULL_REQUEST_NUMBER coveralls debug
+              CI_PULL_REQUEST=$PULL_REQUEST_NUMBER coveralls
+            else
+              coveralls debug
+              coveralls
+            fi
 
 workflows:
   deploy_and_notify:
