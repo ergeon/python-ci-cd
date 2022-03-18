@@ -18,7 +18,8 @@ jobs:
           command: |
             source venv/bin/activate
             make coverage
-            coveralls
+            CI_PULL_REQUEST=22 coveralls debug
+            CI_PULL_REQUEST=22 coveralls
 
 workflows:
   deploy_and_notify:

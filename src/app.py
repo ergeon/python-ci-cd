@@ -15,3 +15,7 @@ def something():
 
 def say_hello():
     return "hello"
+
+
+def new_14():
+    return "14"
