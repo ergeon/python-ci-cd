@@ -18,4 +18,4 @@ def say_hello():
 
 
 def new_20():
-    return '20'
+    return 'value 20'
