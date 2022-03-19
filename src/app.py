@@ -15,7 +15,3 @@ def something():
 
 def say_hello():
     return "hello"
-
-
-def new_20():
-    return 'value 20'
