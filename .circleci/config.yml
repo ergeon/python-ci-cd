@@ -22,8 +22,6 @@ jobs:
           name: Push Coverage
           command: |
             source venv/bin/activate
-            echo "CIRCLE_PULL_REQUEST is:"
-            echo $CIRCLE_PULL_REQUEST
             if [ -n "$CIRCLE_PULL_REQUEST" ]; then
               coveralls debug
               coveralls
@@ -31,17 +29,13 @@ jobs:
               for I in 1 2 3 4 5
               do
                 PULL_REQUEST_NUMBER=$(curl -sb -H "Accept: application/json" "https://api.github.com/repos/ergeon/$CIRCLE_PROJECT_REPONAME/commits/$CIRCLE_SHA1/pulls" | python -c 'import json,sys;data=json.load(sys.stdin);print(data[0]["number"]) if data else print()')
-                echo '-----------'
-                echo CIRCLE_PROJECT_REPONAME: $CIRCLE_PROJECT_REPONAME
-                echo CIRCLE_SHA1: $CIRCLE_SHA1
-                echo PULL_REQUEST_NUMBER: $PULL_REQUEST_NUMBER
                 if [ -n "$PULL_REQUEST_NUMBER" ]; then
                   CI_PULL_REQUEST=$PULL_REQUEST_NUMBER coveralls debug
                   CI_PULL_REQUEST=$PULL_REQUEST_NUMBER coveralls
                   break
                 else
                   echo "PR not found yet, trying again after a while."
-                  echo "Waiting for 5 seconds..."
+                  echo "Waiting for 10 seconds..."
                   sleep 10
                 fi
                 if [[ $I == 5 ]]; then
