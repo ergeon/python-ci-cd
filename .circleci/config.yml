@@ -42,7 +42,7 @@ jobs:
                 else
                   echo "PR not found yet, trying again after a while."
                   echo "Waiting for 5 seconds..."
-                  sleep 5
+                  sleep 10
                 fi
                 if [[ $I == 5 ]]; then
                   echo "Pull Request wasn't found for this commit."
