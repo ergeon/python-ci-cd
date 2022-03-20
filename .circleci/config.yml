@@ -22,7 +22,7 @@ jobs:
           name: Push Coverage
           command: |
             source venv/bin/activate
-            if [ -n "$CIRCLE_PULL_REQUEST" ]; then
+            if [ -n "$CIRCLE_PULL_REQUEST" ] || [ "${CIRCLE_BRANCH}" = "develop" ] || [ "${CIRCLE_BRANCH}" = "master" ]; then
               coveralls debug
               coveralls
             else
