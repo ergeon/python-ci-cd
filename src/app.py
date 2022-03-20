@@ -19,3 +19,7 @@ def say_hello():
 
 def new_24():
     return 'value 24'
+
+
+def new_28():
+    return 'value 28'
