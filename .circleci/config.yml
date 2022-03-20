@@ -33,14 +33,14 @@ jobs:
                   CI_PULL_REQUEST=$PULL_REQUEST_NUMBER coveralls
                   break
                 else
+                  if [[ $I == 5 ]]; then
+                    echo "Pull Request wasn't found for this commit."
+                    echo "Please re-run this build once Pull Request will be opened."
+                    exit 1
+                  fi
                   echo "PR not found yet, trying again after a while."
                   echo "Waiting for 60 seconds..."
                   sleep 60
-                fi
-                if [[ $I == 5 ]]; then
-                  echo "Pull Request wasn't found for this commit."
-                  echo "Please re-run this build once Pull Request will be opened."
-                  exit 1
                 fi
               done
             fi
