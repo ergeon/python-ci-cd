@@ -1,6 +1,3 @@
-from inline.utils import inline
-
-
 def main():
     return 0
 
