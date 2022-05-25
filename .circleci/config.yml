@@ -4,7 +4,7 @@ orbs:
   coveralls: ergeon/coveralls-orb@1.0.9
 jobs:
   run_tests:
-    parallelism: 3
+    parallelism: 2
     docker:
       - image: cimg/python:3.10.2
     steps:
@@ -20,16 +20,13 @@ jobs:
           command: |
             source venv/bin/activate
             
-            TESTFILES=$(circleci tests glob "tests/test_*.py" | \
-            circleci tests split --split-by=timings --timings-type=classname --total=$CIRCLE_NODE_TOTAL)
+            TEST_FILES=$(circleci tests glob "tests/test_*.py" | circleci tests split --total=$CIRCLE_NODE_TOTAL)
           
             mkdir -p coverage
-            coverage run -m pytest $TESTFILES
+            coverage run -m pytest $TEST_FILES
 
-      - persist_to_workspace:
-          root: coverage
-          paths:
-            - .coverage*
+      - store_artifacts:
+          path: coverage
 
       - deploy:
           name: Deploy
