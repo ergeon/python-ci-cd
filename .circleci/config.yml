@@ -1,8 +1,10 @@
 # This config is equivalent to both the '.circleci/extended/orb-free.yml' and the base '.circleci/config.yml'
 version: 2.1
-
+orbs:
+  coveralls: ergeon/coveralls-orb@1.0.9
 jobs:
   run_tests:
+    parallelism: 3
     docker:
       - image: cimg/python:3.10.2
     steps:
@@ -17,36 +19,27 @@ jobs:
           name: Test
           command: |
             source venv/bin/activate
-            make coverage
-      - run:
-          name: Push Coverage
-          command: |
-            source venv/bin/activate
-            if [ -n "$CIRCLE_PULL_REQUEST" ] || [ "${CIRCLE_BRANCH}" = "develop" ] || [ "${CIRCLE_BRANCH}" = "master" ]; then
-              coveralls
-            else
-              for I in 1 2 3 4 5
-              do
-                PULL_REQUEST_NUMBER=$(curl -sb -H "Accept: application/json" -H "Authorization: Token $GITHUB_API_TOKEN" "https://api.github.com/repos/ergeon/$CIRCLE_PROJECT_REPONAME/commits/$CIRCLE_SHA1/pulls" | python -c 'import json,sys;data=json.load(sys.stdin);print(data[0]["number"]) if data and isinstance(data, list) else print()')
+            
+            TESTFILES=$(circleci tests glob "tests/test_*.py" | \
+            circleci tests split --split-by=timings --timings-type=classname --total=$CIRCLE_NODE_TOTAL)
+          
+            mkdir -p coverage
+            coverage run -m pytest $TESTFILES
 
-                if [ -n "$PULL_REQUEST_NUMBER" ]; then
-                  CI_PULL_REQUEST=$PULL_REQUEST_NUMBER coveralls
-                  break
-                else
-                  if [[ $I == 5 ]]; then
-                    echo "Pull Request wasn't found for this commit."
-                    echo "Please re-run this build once Pull Request will be opened."
-                    exit 1
-                  fi
-                  echo "PR not found yet, trying again after a while."
-                  echo "Waiting for 60 seconds..."
-                  sleep 60
-                fi
-              done
-            fi
+      - persist_to_workspace:
+          root: coverage
+          paths:
+            - .coverage*
+
+      - deploy:
+          name: Deploy
+          command: |
+            ls -la coverage
 
 workflows:
   deploy_and_notify:
     jobs:
       - run_tests:
-          context: github-secrets
+          context:
+            - "DEFAULT ERGEON"
+            - github-secrets
