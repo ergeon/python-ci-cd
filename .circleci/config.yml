@@ -33,8 +33,34 @@ jobs:
           command: |
             curl -H "Circle-Token: $CIRCLE_TOKEN" https://circleci.com/api/v1.1/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/$CIRCLE_BUILD_NUM/artifacts \
               | grep -o 'https://[^"]*' \
-              | wget --verbose --header "Circle-Token: $CIRCLE_TOKEN" --input-file -
-            ls -la
+              | wget --verbose --header "Circle-Token: $CIRCLE_TOKEN" -P coverage --input-file -
+            
+            source venv/bin/activate
+            FOLDER_NAME="coverage" make coverage-combine
+            make coverage-report
+            
+            if [ -n "$CIRCLE_PULL_REQUEST" ] || [ "${CIRCLE_BRANCH}" = "develop" ] || [ "${CIRCLE_BRANCH}" = "master" ]; then
+              coveralls
+            else
+              for I in 1 2 3 4 5
+              do
+                PULL_REQUEST_NUMBER=$(curl -sb -H "Accept: application/json" -H "Authorization: Token $GITHUB_API_TOKEN" "https://api.github.com/repos/ergeon/$CIRCLE_PROJECT_REPONAME/commits/$CIRCLE_SHA1/pulls" | python -c 'import json,sys;data=json.load(sys.stdin);print(data[0]["number"]) if data and isinstance(data, list) else print()')
+
+                if [ -n "$PULL_REQUEST_NUMBER" ]; then
+                  CI_PULL_REQUEST=$PULL_REQUEST_NUMBER coveralls
+                  break
+                else
+                  if [[ $I == 5 ]]; then
+                    echo "Pull Request wasn't found for this commit."
+                    echo "Please re-run this build once Pull Request will be opened."
+                    exit 1
+                  fi
+                  echo "PR not found yet, trying again after a while."
+                  echo "Waiting for 60 seconds..."
+                  sleep 60
+                fi
+              done
+            fi
 
 workflows:
   deploy_and_notify:
