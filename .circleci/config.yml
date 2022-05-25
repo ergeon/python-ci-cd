@@ -31,7 +31,10 @@ jobs:
       - deploy:
           name: Deploy
           command: |
-            ls -la coverage
+            curl -H "Circle-Token: $CIRCLE_TOKEN" https://circleci.com/api/v1.1/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/$CIRCLE_BUILD_NUM/artifacts \
+              | grep -o 'https://[^"]*' \
+              | wget --verbose --header "Circle-Token: $CIRCLE_TOKEN" --input-file -
+            ls -la
 
 workflows:
   deploy_and_notify:
